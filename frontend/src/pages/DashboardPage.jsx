@@ -58,6 +58,9 @@ const DashboardPage = () => {
             <Link to="/create-post" className="btn-primary">
               Create New Post
             </Link>
+            <Link to="/admin/contacts" className="btn-secondary">
+              Manage Contacts
+            </Link>
             <button onClick={handleLogout} className="btn-secondary">
               Logout
             </button>

@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiService } from '../utils/api';
+import MediaUpload from '../components/MediaUpload';
 
 const EditPostPage = () => {
   const { id } = useParams();
   const [post, setPost] = useState(null);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [media, setMedia] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -30,6 +32,7 @@ const EditPostPage = () => {
         setPost(data);
         setTitle(data.title);
         setContent(data.content);
+        setMedia(data.media || []);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -56,7 +59,8 @@ const EditPostPage = () => {
     try {
       const postData = {
         title: title.trim(),
-        content: content.trim()
+        content: content.trim(),
+        media: media
       };
 
       const updatedPost = await apiService.updatePost(id, postData, getIdToken);
@@ -180,6 +184,16 @@ const EditPostPage = () => {
             <div className="text-sm text-gray-500 mt-1">
               {content.length}/10,000 characters
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Media (Images and Videos)
+            </label>
+            <MediaUpload 
+              media={media}
+              onMediaChange={setMedia}
+            />
           </div>
 
           <div className="flex justify-between items-center pt-6 border-t border-gray-200">

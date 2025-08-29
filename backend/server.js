@@ -1,22 +1,46 @@
 const express = require('express');
 const cors = require('cors');
 const admin = require('firebase-admin');
+const { setFirebaseInitialized } = require('./middleware/auth');
 require('dotenv').config();
 
 // Initialize Firebase Admin SDK
 // In production, use a service account key file
 // For now, we'll use environment variables or default credentials
+let firebaseInitialized = false;
 try {
-  admin.initializeApp({
-    // If you have a service account key file, uncomment the line below:
-    // credential: admin.credential.cert(require('./firebaseServiceAccountKey.json')),
-    // For now, using default credentials (works in Firebase environment)
-    credential: admin.credential.applicationDefault(),
-  });
-  console.log('Firebase Admin initialized successfully');
+  if (process.env.FIREBASE_PROJECT_ID) {
+    // Use environment variables
+    admin.initializeApp({
+      credential: admin.credential.cert({
+        project_id: process.env.FIREBASE_PROJECT_ID,
+        client_email: process.env.FIREBASE_CLIENT_EMAIL,
+        private_key: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      }),
+      projectId: process.env.FIREBASE_PROJECT_ID,
+    });
+    firebaseInitialized = true;
+    setFirebaseInitialized(true);
+    console.log('Firebase Admin initialized successfully with environment variables');
+  } else if (process.env.NODE_ENV === 'production') {
+    // Try default credentials (works in Firebase/GCP environment)
+    admin.initializeApp({
+      credential: admin.credential.applicationDefault(),
+    });
+    firebaseInitialized = true;
+    setFirebaseInitialized(true);
+    console.log('Firebase Admin initialized successfully with default credentials');
+  } else {
+    // Development mode - don't initialize Firebase
+    console.log('Firebase Admin not initialized - running in development mode');
+    firebaseInitialized = false;
+    setFirebaseInitialized(false);
+  }
 } catch (error) {
   console.log('Firebase Admin initialization error:', error.message);
-  console.log('Note: In production, add your firebaseServiceAccountKey.json file');
+  console.log('Note: Running in development mode without Firebase. Some features will be limited.');
+  firebaseInitialized = false;
+  setFirebaseInitialized(false);
 }
 
 const app = express();
@@ -31,6 +55,9 @@ app.use(express.json());
 
 // Routes
 app.use('/api/posts', require('./routes/posts'));
+app.use('/api/contacts', require('./routes/contacts'));
+app.use('/api/support', require('./routes/support'));
+app.use('/api/media', require('./routes/media'));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
