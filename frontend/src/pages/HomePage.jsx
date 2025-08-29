@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { apiService } from '../utils/api';
+import { firebaseService } from '../utils/firebaseService';
 
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
@@ -11,7 +11,7 @@ const HomePage = () => {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        const data = await apiService.getAllPosts();
+        const data = await firebaseService.getAllPosts();
         setPosts(data);
       } catch (err) {
         setError(err.message);

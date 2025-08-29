@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { apiService } from '../utils/api';
+import { firebaseService } from '../utils/firebaseService';
 
 const PostPage = () => {
   const { id } = useParams();
@@ -12,7 +12,7 @@ const PostPage = () => {
     const fetchPost = async () => {
       try {
         setLoading(true);
-        const data = await apiService.getPost(id);
+        const data = await firebaseService.getPost(id);
         setPost(data);
       } catch (err) {
         setError(err.message);

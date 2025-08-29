@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { apiService } from '../utils/api';
+import { useAuth } from '../context/useAuth';
+import { firebaseService } from '../utils/firebaseService';
 
 const EditPostPage = () => {
   const { id } = useParams();
@@ -12,14 +12,14 @@ const EditPostPage = () => {
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState(null);
-  const { currentUser, getIdToken } = useAuth();
+  const { currentUser } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
         setLoading(true);
-        const data = await apiService.getPost(id);
+        const data = await firebaseService.getPost(id);
         
         // Check if current user owns this post
         if (data.authorId !== currentUser?.uid) {
@@ -59,7 +59,7 @@ const EditPostPage = () => {
         content: content.trim()
       };
 
-      const updatedPost = await apiService.updatePost(id, postData, getIdToken);
+      const updatedPost = await firebaseService.updatePost(id, postData, currentUser);
       setPost(updatedPost);
       
       // Redirect to the updated post
@@ -80,7 +80,7 @@ const EditPostPage = () => {
     setError(null);
 
     try {
-      await apiService.deletePost(id, getIdToken);
+      await firebaseService.deletePost(id, currentUser);
       
       // Redirect to dashboard after successful deletion
       navigate('/dashboard');

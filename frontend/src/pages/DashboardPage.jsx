@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { apiService } from '../utils/api';
+import { useAuth } from '../context/useAuth';
+import { firebaseService } from '../utils/firebaseService';
 
 const DashboardPage = () => {
-  const { currentUser, getIdToken, logout } = useAuth();
+  const { currentUser, logout } = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,7 +15,7 @@ const DashboardPage = () => {
       
       try {
         setLoading(true);
-        const data = await apiService.getUserPosts(currentUser.uid, getIdToken);
+        const data = await firebaseService.getUserPosts(currentUser.uid, currentUser);
         setPosts(data);
       } catch (err) {
         setError(err.message);
@@ -25,7 +25,7 @@ const DashboardPage = () => {
     };
 
     fetchUserPosts();
-  }, [currentUser, getIdToken]);
+  }, [currentUser]);
 
   const handleLogout = async () => {
     try {

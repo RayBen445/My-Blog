@@ -27,18 +27,14 @@ class ApiService {
   }
 
   async authenticatedRequest(endpoint, options = {}, getIdToken) {
-    try {
-      const idToken = await getIdToken();
-      return await this.request(endpoint, {
-        ...options,
-        headers: {
-          ...options.headers,
-          Authorization: `Bearer ${idToken}`,
-        },
-      });
-    } catch (error) {
-      throw error;
-    }
+    const idToken = await getIdToken();
+    return await this.request(endpoint, {
+      ...options,
+      headers: {
+        ...options.headers,
+        Authorization: `Bearer ${idToken}`,
+      },
+    });
   }
 
   // Posts API

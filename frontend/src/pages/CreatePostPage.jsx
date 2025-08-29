@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { apiService } from '../utils/api';
+import { useAuth } from '../context/useAuth';
+import { firebaseService } from '../utils/firebaseService';
 
 const CreatePostPage = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { getIdToken } = useAuth();
+  const { currentUser } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -28,7 +28,7 @@ const CreatePostPage = () => {
         content: content.trim()
       };
 
-      const newPost = await apiService.createPost(postData, getIdToken);
+      const newPost = await firebaseService.createPost(postData, currentUser);
       
       // Redirect to the new post
       navigate(`/posts/${newPost.id}`);
