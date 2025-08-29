@@ -6,21 +6,10 @@ const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Check if running in Firebase Functions environment
-const isFirebaseFunctions = process.env.FUNCTIONS_EMULATOR === 'true' || process.env.FUNCTION_NAME;
-let storage, bucket;
-
-if (isFirebaseFunctions) {
-  // Use Firebase Storage when deployed
-  const admin = require('firebase-admin');
-  storage = admin.storage();
-  bucket = storage.bucket();
-} else {
-  // Use local storage for development
-  const uploadsDir = path.join(__dirname, '../uploads');
-  if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-  }
+// Create uploads directory if it doesn't exist
+const uploadsDir = path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
 // Configure multer for file uploads

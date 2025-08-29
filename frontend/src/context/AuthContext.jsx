@@ -2,10 +2,11 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { 
   onAuthStateChanged, 
   signInWithEmailAndPassword, 
+  signInWithPopup,
   signOut,
   createUserWithEmailAndPassword 
 } from 'firebase/auth';
-import { auth } from '../firebase';
+import { auth, googleProvider } from '../firebase';
 
 const AuthContext = createContext();
 
@@ -37,6 +38,17 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const result = await createUserWithEmailAndPassword(auth, email, password);
+      return result;
+    } catch (error) {
+      setError(error.message);
+      throw error;
+    }
+  };
+
+  const loginWithGoogle = async () => {
+    try {
+      setError(null);
+      const result = await signInWithPopup(auth, googleProvider);
       return result;
     } catch (error) {
       setError(error.message);
@@ -79,6 +91,7 @@ export const AuthProvider = ({ children }) => {
     currentUser,
     login,
     register,
+    loginWithGoogle,
     logout,
     getIdToken,
     error,

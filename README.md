@@ -1,30 +1,52 @@
-# My Blog
+# My Blog - Dynamic Contacts & Media System
 
-A full-stack blog application built with Node.js, Express, React, and Firebase. This monorepo contains both the backend API and frontend web application.
+A full-stack blog application with dynamic contact management, support messaging system, and media upload capabilities.
 
-## Features
+## 🚀 Features
 
-- 📝 Create, read, update, and delete blog posts
-- 🔐 User authentication with Firebase Auth
-- 🎨 Responsive design with Tailwind CSS
-- 🔒 Protected routes and API endpoints
-- 📱 Mobile-friendly interface
-- ⚡ Fast development with Vite
+### Core Features
+- **Dynamic Contact Management**: Admin can add/edit/remove contact methods (WhatsApp, Telegram, email, phone)
+- **Support Message System**: Users can send messages via form, delivered to Telegram bot
+- **Media Upload System**: Upload images and videos in blog posts with preview and removal
+- **Authentication**: Google Sign-In and email/password authentication
+- **Responsive Design**: Works on desktop and mobile devices
 
-## Tech Stack
+### Contact System
+- Support multiple contact types (WhatsApp, Telegram, Email, Phone, Website, Custom)
+- Floating support button with contact panel
+- Admin interface for contact management
+- Automatic contact linking (mailto, tel, wa.me, t.me)
 
-### Backend
-- **Node.js** with Express.js
-- **Firebase Admin SDK** for authentication and Firestore database
-- **CORS** for cross-origin requests
-- **dotenv** for environment variables
+### Support Messages
+- Professional contact form with validation
+- Email format validation and character limits
+- Telegram bot integration for message delivery
+- Message storage in Firestore database
+- Success confirmation with auto-close
+
+### Media System
+- Drag & drop file upload (images and videos)
+- File type and size validation (50MB limit)
+- Image and video preview with playback controls
+- Media removal functionality
+- Secure file serving with access control
+
+## 🛠️ Tech Stack
 
 ### Frontend
-- **React 19** with functional components and hooks
-- **Vite** for fast development and building
-- **React Router** for client-side routing
+- **React 19** with Vite
+- **Firebase Authentication** with Google Sign-In
+- **React Router** for navigation
 - **Tailwind CSS** for styling
-- **Firebase Client SDK** for authentication
+- **Responsive Design** for all devices
+
+### Backend
+- **Node.js** with Express
+- **Firebase Admin SDK** for authentication
+- **Firestore** for data storage
+- **Multer** for file uploads
+- **Firebase Storage** for media files (production)
+- **Local storage** for media files (development)
 
 ## Project Structure
 
