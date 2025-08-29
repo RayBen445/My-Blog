@@ -56,6 +56,8 @@ app.use(express.json());
 // Routes
 app.use('/api/posts', require('./routes/posts'));
 app.use('/api/contacts', require('./routes/contacts'));
+app.use('/api/support', require('./routes/support'));
+app.use('/api/media', require('./routes/media'));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

@@ -29,13 +29,32 @@ class ApiService {
   async authenticatedRequest(endpoint, options = {}, getIdToken) {
     try {
       const idToken = await getIdToken();
-      return await this.request(endpoint, {
+      
+      const config = {
         ...options,
         headers: {
           ...options.headers,
           Authorization: `Bearer ${idToken}`,
         },
-      });
+      };
+
+      // Don't set Content-Type for FormData
+      if (!(config.body instanceof FormData)) {
+        config.headers['Content-Type'] = 'application/json';
+        
+        if (config.body && typeof config.body !== 'string') {
+          config.body = JSON.stringify(config.body);
+        }
+      }
+
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
     } catch (error) {
       throw error;
     }
@@ -99,6 +118,46 @@ class ApiService {
 
   async deleteContact(id, getIdToken) {
     return await this.authenticatedRequest(`/contacts/${id}`, {
+      method: 'DELETE',
+    }, getIdToken);
+  }
+
+  // Support Messages API
+  async sendSupportMessage(messageData) {
+    return await this.request('/support', {
+      method: 'POST',
+      body: messageData,
+    });
+  }
+
+  async getSupportMessages(getIdToken) {
+    return await this.authenticatedRequest('/support', {}, getIdToken);
+  }
+
+  // Media API
+  async uploadMedia(files, getIdToken) {
+    const formData = new FormData();
+    
+    // Add files to FormData
+    if (Array.isArray(files)) {
+      files.forEach(file => {
+        formData.append('media', file);
+      });
+    } else {
+      formData.append('media', files);
+    }
+
+    return await this.authenticatedRequest('/media/upload', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        // Don't set Content-Type header for FormData, browser will set it with boundary
+      }
+    }, getIdToken);
+  }
+
+  async deleteMedia(filename, getIdToken) {
+    return await this.authenticatedRequest(`/media/file/${filename}`, {
       method: 'DELETE',
     }, getIdToken);
   }

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../utils/api';
+import SupportMessageModal from './SupportMessageModal';
 
 const SupportButton = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showMessageModal, setShowMessageModal] = useState(false);
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -109,7 +111,18 @@ const SupportButton = () => {
           )}
 
           {!loading && !error && contacts.length === 0 && (
-            <p className="text-gray-500 text-center py-4">No contact methods available.</p>
+            <div className="text-center py-4">
+              <p className="text-gray-500 mb-4">No contact methods configured yet.</p>
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  setShowMessageModal(true);
+                }}
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              >
+                Send us a message
+              </button>
+            </div>
           )}
 
           {!loading && !error && contacts.length > 0 && (
@@ -133,10 +146,29 @@ const SupportButton = () => {
                   </svg>
                 </a>
               ))}
+              
+              {/* Add message button even when contacts exist */}
+              <div className="pt-3 border-t border-gray-200">
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                    setShowMessageModal(true);
+                  }}
+                  className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200 text-sm"
+                >
+                  💬 Send us a message
+                </button>
+              </div>
             </div>
           )}
         </div>
       </div>
+
+      {/* Support Message Modal */}
+      <SupportMessageModal 
+        isOpen={showMessageModal}
+        onClose={() => setShowMessageModal(false)}
+      />
     </div>
   );
 };

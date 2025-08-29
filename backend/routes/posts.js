@@ -101,16 +101,31 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
 // POST /api/posts - Create new post (requires authentication)
 router.post('/', authenticateToken, async (req, res) => {
   try {
-    const { title, content } = req.body;
+    const { title, content, media = [] } = req.body;
 
     if (!title || !content) {
       return res.status(400).json({ error: 'Title and content are required' });
+    }
+
+    // In development without Firebase, return mock data
+    if (!postsCollection) {
+      const mockPost = {
+        id: 'dev-post-' + Date.now(),
+        title: title.trim(),
+        content: content.trim(),
+        media: media,
+        authorId: 'dev-user-123',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      return res.status(201).json(mockPost);
     }
 
     const now = admin.firestore.Timestamp.now();
     const postData = {
       title: title.trim(),
       content: content.trim(),
+      media: media || [],
       authorId: req.user.uid,
       createdAt: now,
       updatedAt: now
@@ -135,11 +150,25 @@ router.post('/', authenticateToken, async (req, res) => {
 // PUT /api/posts/:id - Update post (requires authentication and ownership)
 router.put('/:id', authenticateToken, async (req, res) => {
   try {
-    const { title, content } = req.body;
+    const { title, content, media = [] } = req.body;
     const postId = req.params.id;
 
     if (!title || !content) {
       return res.status(400).json({ error: 'Title and content are required' });
+    }
+
+    // In development without Firebase, return mock data
+    if (!postsCollection) {
+      const mockPost = {
+        id: postId,
+        title: title.trim(),
+        content: content.trim(),
+        media: media,
+        authorId: 'dev-user-123',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      return res.json(mockPost);
     }
 
     // Check if post exists and user owns it
@@ -158,6 +187,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     const updatedData = {
       title: title.trim(),
       content: content.trim(),
+      media: media || [],
       updatedAt: admin.firestore.Timestamp.now()
     };
 

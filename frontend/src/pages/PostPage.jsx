@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { apiService } from '../utils/api';
+import MediaDisplay from '../components/MediaDisplay';
 
 const PostPage = () => {
   const { id } = useParams();
@@ -104,6 +105,8 @@ const PostPage = () => {
           <div className="text-gray-800 leading-relaxed whitespace-pre-wrap">
             {post.content}
           </div>
+          
+          <MediaDisplay media={post.media} />
         </div>
       </article>
     </div>

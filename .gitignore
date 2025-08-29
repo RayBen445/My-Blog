@@ -47,3 +47,6 @@ Thumbs.db
 # Temporary files
 tmp/
 temp/
+
+# Uploaded media files
+backend/uploads/
