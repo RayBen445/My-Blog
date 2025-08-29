@@ -1,11 +1,9 @@
 # Dependencies
 node_modules/
-backend/node_modules/
 frontend/node_modules/
 
 # Build outputs
 frontend/dist/
-backend/build/
 
 # Environment variables
 .env
@@ -13,9 +11,11 @@ backend/build/
 .env.production
 .env.development
 
-# Firebase
-# Add your Firebase service account key file here
+# Deprecated backend files (no longer used)
+backend/node_modules/
+backend/build/
 backend/firebaseServiceAccountKey.json
+backend/.env
 
 # Logs
 *.log
