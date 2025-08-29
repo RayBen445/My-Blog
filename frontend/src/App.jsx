@@ -10,9 +10,11 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import CreatePostPage from './pages/CreatePostPage';
 import EditPostPage from './pages/EditPostPage';
+import ContactManagementPage from './pages/ContactManagementPage';
 
 // Navigation Component
 import Navigation from './components/Navigation';
+import SupportButton from './components/SupportButton';
 
 function App() {
   return (
@@ -52,6 +54,14 @@ function App() {
                   </ProtectedRoute>
                 } 
               />
+              <Route 
+                path="/admin/contacts" 
+                element={
+                  <ProtectedRoute>
+                    <ContactManagementPage />
+                  </ProtectedRoute>
+                } 
+              />
               
               {/* 404 Route */}
               <Route 
@@ -66,6 +76,7 @@ function App() {
               />
             </Routes>
           </main>
+          <SupportButton />
         </div>
       </Router>
     </AuthProvider>

@@ -73,6 +73,35 @@ class ApiService {
       method: 'DELETE',
     }, getIdToken);
   }
+
+  // Contacts API
+  async getAllContacts() {
+    return await this.request('/contacts');
+  }
+
+  async getAdminContacts(getIdToken) {
+    return await this.authenticatedRequest('/contacts/admin', {}, getIdToken);
+  }
+
+  async createContact(contactData, getIdToken) {
+    return await this.authenticatedRequest('/contacts', {
+      method: 'POST',
+      body: contactData,
+    }, getIdToken);
+  }
+
+  async updateContact(id, contactData, getIdToken) {
+    return await this.authenticatedRequest(`/contacts/${id}`, {
+      method: 'PUT',
+      body: contactData,
+    }, getIdToken);
+  }
+
+  async deleteContact(id, getIdToken) {
+    return await this.authenticatedRequest(`/contacts/${id}`, {
+      method: 'DELETE',
+    }, getIdToken);
+  }
 }
 
 export const apiService = new ApiService();

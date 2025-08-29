@@ -1,7 +1,20 @@
 const admin = require('firebase-admin');
+require('dotenv').config();
+
+let firebaseInitialized = false;
 
 const authenticateToken = async (req, res, next) => {
   try {
+    // In development without Firebase, bypass authentication
+    if (process.env.NODE_ENV === 'development' && !firebaseInitialized) {
+      req.user = {
+        uid: 'dev-user-123',
+        email: 'dev@example.com',
+        emailVerified: true
+      };
+      return next();
+    }
+    
     const authHeader = req.headers.authorization;
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -40,4 +53,9 @@ const authenticateToken = async (req, res, next) => {
   }
 };
 
-module.exports = { authenticateToken };
+// Export the firebaseInitialized flag to be set by server.js
+const setFirebaseInitialized = (status) => {
+  firebaseInitialized = status;
+};
+
+module.exports = { authenticateToken, setFirebaseInitialized };

@@ -3,12 +3,23 @@ const admin = require('firebase-admin');
 const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
-const db = admin.firestore();
-const postsCollection = db.collection('posts');
+let db, postsCollection;
+
+try {
+  db = admin.firestore();
+  postsCollection = db.collection('posts');
+} catch (error) {
+  console.log('Firestore not available in development mode');
+}
 
 // GET /api/posts - Get all posts (public)
 router.get('/', async (req, res) => {
   try {
+    // In development without Firebase, return empty array
+    if (!postsCollection) {
+      return res.json([]);
+    }
+    
     const snapshot = await postsCollection
       .orderBy('createdAt', 'desc')
       .get();
