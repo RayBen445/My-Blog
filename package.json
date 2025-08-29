@@ -1,0 +1,19 @@
+{
+  "name": "my-blog-monorepo",
+  "version": "1.0.0",
+  "description": "Full-stack blog application with Node.js backend and React frontend",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=backend & npm run dev --workspace=frontend",
+    "build": "npm run build --workspace=frontend",
+    "start": "npm start --workspace=backend",
+    "install-all": "npm install && npm install --workspace=backend && npm install --workspace=frontend"
+  },
+  "keywords": ["blog", "monorepo", "nodejs", "react", "firebase"],
+  "author": "RayBen445",
+  "license": "MIT"
+}
